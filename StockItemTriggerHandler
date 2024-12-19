@@ -1,3 +1,38 @@
+// Anonymous block for First method
+List<Stock_Item__c> newstockitems=new List<Stock_Item__c>();
+Stock_Item__c s=new Stock_Item__c();
+s.Item_Name__c='Sugar';
+s.Description__c='Sugar stock';
+s.List_Price__c=100;
+s.Minimum_Stock_Level__c=500;
+s.Stock_on_Hand__c=1500;
+newstockitems.add(s);
+StockItemTriggerHandler.onBeforeCreate(newstockitems);
+insert newstockitems;
+
+// Anonymous block for Second method
+List<Stock_Item__c> s=[select ID, Item_Name__c, Stock_on_Hand__c from Stock_Item__c];
+StockItemTriggerHandler.onBeforeDelete(s);
+delete s;
+
+// Anonymous block for Third method
+List<Stock_Item__c> getstockitems=StockItemTriggerHandler.getLowStockItems();
+System.debug(getstockitems);
+
+Trigger StockItemTrigger on Stock_Item__c (before insert, before delete) {
+
+    //Before Insert Handling
+   if(Trigger.isInsert && Trigger.isBefore) {
+       StockItemTriggerHandler.onBeforeCreate(Trigger.new);
+  
+    }
+ 
+//    //After DeleteHandling
+    if (Trigger.isDelete && Trigger.isBefore) {
+        StockItemTriggerHandler.onBeforeDelete(Trigger.old);
+    } 
+}
+
 public class StockItemTriggerHandler {
  public static void onBeforeCreate(List<Stock_Item__c> getstockitem) 
     {
